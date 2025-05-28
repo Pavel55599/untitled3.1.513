@@ -69,11 +69,239 @@ public class Communication {
 
 
 
-
-
-
-
-
+/**/
+//
+//# Подробный разбор кода класса `Communication`
+//
+//Давайте разберём ваш код максимально подробно, объясняя каждую часть.
+//
+//        ## 1. Объявление класса и полей
+//
+//```java
+//public class Communication {
+//```
+//        - `public` - модификатор доступа, означает что класс доступен из любого другого класса
+//- `class` - ключевое слово для объявления класса
+//- `Communication` - имя класса
+//
+//```java
+//    private final String URL = "http://94.198.50.185:7081/api/users";
+//```
+//        - `private` - модификатор доступа, поле доступно только внутри этого класса
+//- `final` - означает что значение переменной нельзя изменить после инициализации
+//- `String` - тип данных (строка)
+//- `URL` - имя переменной (константы)
+//- Значение - адрес API endpoint'а для работы с пользователями
+//
+//            ```java
+//    private String sessionId = "";
+//```
+//        - `private` - модификатор доступа
+//- `String` - тип данных
+//- `sessionId` - имя переменной для хранения идентификатора сессии
+//- `= ""` - инициализация пустой строкой
+//
+//```java
+//    @Autowired
+//    private RestTemplate restTemplate = new RestTemplate();
+//```
+//        - `@Autowired` - аннотация Spring для автоматического внедрения зависимости
+//- `private` - модификатор доступа
+//- `RestTemplate` - класс Spring для выполнения HTTP-запросов
+//- `restTemplate` - имя переменной
+//- `= new RestTemplate()` - создание нового экземпляра RestTemplate
+//
+//## 2. Метод performOperations()
+//
+//```java
+//    public void performOperations() {
+//```
+//        - `public` - модификатор доступа
+//                - `void` - тип возвращаемого значения (ничего)
+//                - `performOperations` - имя метода
+//
+//### 2.1. Получение сессии и списка пользователей
+//
+//```java
+//        HttpHeaders headers = new HttpHeaders();
+//```
+//        - `HttpHeaders` - класс Spring для работы с HTTP-заголовками
+//                - `headers` - имя переменной
+//                - `new HttpHeaders()` - создание нового объекта заголовков
+//
+//```java
+//        ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+//```
+//        - `ResponseEntity<String>` - класс Spring, представляющий HTTP-ответ с телом типа String
+//        - `response` - имя переменной
+//                - `restTemplate.exchange()` - метод для выполнения HTTP-запроса
+//                - Параметры:
+//        - `URL` - адрес запроса
+//                - `HttpMethod.GET` - тип HTTP-метода (GET)
+//                - `new HttpEntity<>(headers)` - создание HTTP-сущности с заголовками
+//        - `String.class` - ожидаемый тип тела ответа
+//
+//```java
+//                sessionId = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE).split(";")[0];
+//```
+//        - Получение идентификатора сессии из заголовков ответа:
+//        - `response.getHeaders()` - получение заголовков ответа
+//        - `.getFirst(HttpHeaders.SET_COOKIE)` - получение значения заголовка Set-Cookie
+//                - `.split(";")[0]` - разделение строки куки по ";" и взятие первой части
+//
+//```java
+//        System.out.println("JSESSIONID: " + sessionId);
+//```
+//        - Вывод в консоль идентификатора сессии
+//
+//```java
+//        System.out.println("Полученные пользователи: " + response.getBody());
+//```
+//        - Вывод в консоль тела ответа (списка пользователей)
+//
+//```java
+//        headers.set("Cookie", sessionId);
+//```
+//        - Установка заголовка Cookie для последующих запросов
+//
+//### 2.2. Создание пользователя
+//
+//```java
+//        User user = new User();
+//```
+//        - `User` - класс, представляющий пользователя
+//                - `user` - имя переменной
+//                - `new User()` - создание нового объекта пользователя
+//
+//```java
+//        user.setId(3L);
+//        user.setName("James");
+//        user.setLastName("Brown");
+//        user.setAge((byte) 30);
+//```
+//        - Установка свойств пользователя:
+//        - `setId(3L)` - установка ID (3, тип Long)
+//                - `setName("James")` - установка имени
+//                - `setLastName("Brown")` - установка фамилии
+//                - `setAge((byte) 30)` - установка возраста (30, тип byte)
+//
+//```java
+//        System.err.println(user);
+//```
+//        - Вывод информации о пользователе в консоль (через System.err)
+//
+//```java
+//        HttpEntity<User> request = new HttpEntity<>(user, headers);
+//```
+//        - Создание HTTP-сущности для запроса:
+//        - `HttpEntity<User>` - сущность с телом типа User
+//        - `request` - имя переменной
+//                - `new HttpEntity<>(user, headers)` - создание сущности с телом (user) и заголовками
+//
+//```java
+//        String code1 = restTemplate.postForEntity(URL, request, String.class).getBody();
+//```
+//        - Отправка POST-запроса:
+//        - `restTemplate.postForEntity()` - метод для POST-запроса
+//                - `URL` - адрес
+//                - `request` - тело запроса
+//                - `String.class` - ожидаемый тип ответа
+//        - `.getBody()` - получение тела ответа
+//        - `code1` - переменная для хранения кода ответа
+//
+//```java
+//        System.out.println("созданный пользователь " + request.getBody());
+//```
+//        - Вывод информации о созданном пользователе
+//
+//```java
+//        System.out.println("Код после создания: " + code1);
+//```
+//        - Вывод кода ответа после создания пользователя
+//
+//### 2.3. Обновление пользователя
+//
+//```java
+//        user.setName("Thomas");
+//        user.setLastName("Shelby");
+//```
+//        - Обновление данных пользователя
+//
+//```java
+//        HttpEntity<User> updateUser = new HttpEntity<>(user, headers);
+//```
+//        - Создание HTTP-сущности для обновления
+//
+//```java
+//        String code2 = restTemplate.exchange(URL, HttpMethod.PUT, updateUser, String.class).getBody();
+//```
+//        - Отправка PUT-запроса для обновления:
+//        - `exchange()` - универсальный метод для HTTP-запросов
+//                - `HttpMethod.PUT` - тип запроса (PUT)
+//                - `updateUser` - тело запроса
+//                - `String.class` - ожидаемый тип ответа
+//
+//```java
+//        System.out.println("обновленный пользователь " + updateUser.getBody());
+//```
+//        - Вывод информации об обновленном пользователе
+//
+//```java
+//        System.out.println("Вторая часть кода: " + code2);
+//```
+//        - Вывод кода ответа после обновления
+//
+//### 2.4. Удаление пользователя
+//
+//```java
+//        HttpEntity<User> deleteUser = new HttpEntity<>(user, headers);
+//```
+//        - Создание HTTP-сущности для удаления
+//
+//```java
+//        String code3 = restTemplate.exchange(URL + "/3", HttpMethod.DELETE, deleteUser, String.class).getBody();
+//```
+//        - Отправка DELETE-запроса:
+//        - `URL + "/3"` - адрес с ID пользователя для удаления
+//                - `HttpMethod.DELETE` - тип запроса (DELETE)
+//
+//```java
+//        System.out.println("удаленный пользователь " + deleteUser.getBody());
+//```
+//        - Вывод информации об удаляемом пользователе
+//
+//```java
+//        System.out.println("ТРЕТЬЯ ЧАСТЬ КОДА: " + code3);
+//```
+//        - Вывод кода ответа после удаления
+//
+//### 2.5. Итоговый вывод
+//
+//```java
+//        System.out.println("Итоговый код: " + code1 + code2 + code3);
+//```
+//        - Вывод объединенного кода из всех операций
+//
+//## Используемые классы и интерфейсы
+//
+//        1. **RestTemplate** - основной класс Spring для выполнения HTTP-запросов
+//        2. **HttpHeaders** - класс для работы с HTTP-заголовками
+//        3. **HttpEntity** - класс-контейнер для HTTP-запросов/ответов (тело + заголовки)
+//        4. **ResponseEntity** - расширение HttpEntity с добавлением HTTP-статуса
+//        5. **HttpMethod** - enum с типами HTTP-методов (GET, POST, PUT, DELETE)
+//        6. **User** - ваш класс-модель для представления пользователя
+//
+//## Логика работы
+//
+//        1. Получает список пользователей (GET) и извлекает идентификатор сессии
+//        2. Создает нового пользователя (POST)
+//        3. Обновляет данные пользователя (PUT)
+//        4. Удаляет пользователя (DELETE)
+//                5. Собирает коды ответов от каждой операции и выводит их объединенную версию
+//
+//        Этот код демонстрирует полный цикл CRUD (Create, Read, Update, Delete) операций с REST API, используя Spring RestTemplate.
+//
+//
 
 
 
